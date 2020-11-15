@@ -2,15 +2,12 @@ from random import choice, uniform
 import os
 import urllib.request
 import numpy as np
-
 from skyfield import api
 from skyfield.api import load
-
 from pathlib import Path
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import matplotlib.ticker as mticker
-
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
@@ -103,24 +100,16 @@ def readTLE(fileName='./india_tle.dat'):
 	ts = load.timescale(builtin=True)
 	t  = ts.now()
 
-	days = 1; old_date = 0;
-	if not os.path.exists(fileName):
-		# call create local tle function
-		print("Creating new tle file")
-		dict = getISROSatelliteList()
-		saveTLE(dict, fileName)		
-		# load the new one
-		satellites = load.tle(fileName)
-	else:
-		# load the local file		
-		satellites = load.tle(fileName)
-		# get the first in the dictionary
-		sat_id = list(satellites.keys())[0] 
-		satellite = satellites[sat_id]
-
-		days = t - satellite.epoch
-		old_date = satellite.epoch.utc_strftime('-%Y-%m-%d-%H-%M-%S')		
-	# if older than refresh_days create new local tle and load new one 
+	days = 1
+	old_date = 0
+	
+	# call create local tle function
+	print("Creating new tle file")
+	dict = getISROSatelliteList()
+	saveTLE(dict, fileName)		
+	# load the new one
+	satellites = load.tle(fileName)
+	
 	if abs(days) > refresh_days:
 		# call create local tle function
 		print("Creating new tle file")
